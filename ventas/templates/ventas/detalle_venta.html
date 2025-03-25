@@ -1,11 +1,39 @@
-{% extends 'core/base.html' %}
+{% extends "core/base.html" %}
 
 {% block content %}
-<h2>Detalle de Venta</h2>
-<p>ID: {{ venta.id }}</p>
-<p>Fecha: {{ venta.fecha }}</p>
-<p>Cliente: {{ venta.cliente.nombre }}</p>
-<p>Cantidad: {{ venta.cantidad }}</p>
-<p>Precio: {{ venta.precio }}</p>
-<a href="{% url 'ventas:lista_ventas' %}" class="btn btn-secondary">Volver</a>
+<div class="container">
+    <h2>Detalle de la Venta</h2>
+
+    <p><strong>ID:</strong> {{ venta.id }}</p>
+    <p><strong>Fecha:</strong> {{ venta.fecha }}</p>
+    <p><strong>Cliente:</strong> {{ venta.cliente.nombre }}</p>
+
+    <h3>Detalles de la Venta</h3>
+    {% if venta.detalles.all %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tipo de Cilindro</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in venta.detalles.all %}
+                    <tr>
+                        <td>{{ detalle.cilindro.peso }} kg</td>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>${{ detalle.precio_unitario }}</td>
+                        <td>${{ detalle.subtotal }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay detalles para esta venta.</p>
+    {% endif %}
+
+    <a href="{% url 'ventas:lista_ventas' %}" class="btn btn-warning">Volver al Listado de Ventas</a>
+</div>
 {% endblock %}

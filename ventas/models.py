@@ -22,6 +22,7 @@ class Cliente(models.Model):
     tipo_cliente = models.CharField(max_length=20, choices=TIPO_CLIENTE_CHOICES)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+    direccion = models.CharField(max_length=255, blank=True, null=True)  # Campo para la dirección
 
     def __str__(self):
         return f"{self.nombre} ({self.tipo_cliente})"

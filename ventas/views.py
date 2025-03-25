@@ -1,7 +1,12 @@
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from .models import Venta  # Asegúrate de que el modelo Venta está definido
 from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from .models import Venta, DetalleVenta, Cilindro, Cliente
+from .forms import VentaForm, DetalleVentaForm, ClienteForm
+
 
 @login_required
 def lista_ventas(request):
@@ -9,8 +14,60 @@ def lista_ventas(request):
     return render(request, 'ventas/lista_ventas.html', {'ventas': ventas})
 
 @login_required
+def guardar_cliente(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        tipo_cliente = request.POST.get('tipo_cliente')
+        telefono = request.POST.get('telefono')
+        email = request.POST.get('email')
+        direccion = request.POST.get('direccion')  # Capturamos la dirección
+
+        cliente = Cliente.objects.create(
+            nombre=nombre,
+            tipo_cliente=tipo_cliente,
+            telefono=telefono,
+            email=email,
+            direccion=direccion  # Guardamos la dirección
+        )
+
+        return JsonResponse({
+            'success': True,
+            'id': cliente.id,
+            'nombre': cliente.nombre,
+            'direccion': cliente.direccion  # Enviamos también la dirección en la respuesta
+        })
+    return JsonResponse({'success': False})
+
+@login_required
 def registrar_venta(request):
-    return HttpResponse("Aquí irá el formulario de registro de ventas.")
+    if request.method == 'POST':
+        venta_form = VentaForm(request.POST)
+        detalle_form = DetalleVentaForm(request.POST)
+        
+        if venta_form.is_valid() and detalle_form.is_valid():
+            # Crear la venta
+            venta = venta_form.save(commit=False)
+            venta.save()  # Guardamos la venta
+            
+            # Crear el detalle de la venta
+            detalle = detalle_form.save(commit=False)
+            detalle.venta = venta
+            detalle.save()  # Guardamos el detalle de la venta
+
+            # Actualizar stock del cilindro
+            cilindro = detalle.cilindro
+            cilindro.stock -= detalle.cantidad
+            cilindro.save()
+
+            return redirect('ventas:lista_ventas')  # Redirigir a la lista de ventas
+    else:
+        venta_form = VentaForm()
+        detalle_form = DetalleVentaForm()
+
+    return render(request, 'ventas/registrar_venta.html', {
+        'venta_form': venta_form,
+        'detalle_form': detalle_form
+    })
 
 @login_required
 def detalle_venta(request, venta_id):

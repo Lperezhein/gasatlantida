@@ -1,15 +1,135 @@
 {% extends "core/base.html" %}
+
 {% block content %}
-<div class="container mt-4">
-    <h2>Registrar Venta</h2>
-    <form method="post">
+<div class="container">
+    <h2 class="my-4">Registrar Venta</h2>
+    
+    <!-- Formulario de Venta -->
+    <form method="post" id="venta-form">
         {% csrf_token %}
-        <div class="mb-3">
-            <label for="cliente" class="form-label">Cliente</label>
-            {{ form.cliente }}
+        
+        <!-- Sección de Cliente -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <label for="id_cliente" class="form-label">Cliente</label>
+                {{ venta_form.cliente }}
+            </div>
+            <div class="col-md-4 d-flex align-items-center">
+                <button type="button" id="nuevo-cliente-btn" class="btn btn-link">Agregar Nuevo Cliente</button>
+            </div>
         </div>
-        <button type="submit" class="btn btn-success">Guardar</button>
+
+        <!-- Formulario para agregar un nuevo cliente (oculto inicialmente) -->
+        <div id="nuevo-cliente-form" class="mb-4" style="display: none;">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="id_nombre" class="form-label">Nombre Cliente</label>
+                        <input type="text" class="form-control" id="id_nombre" placeholder="Nombre del cliente">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="id_tipo_cliente" class="form-label">Tipo Cliente</label>
+                        <select class="form-control" id="id_tipo_cliente">
+                            <option value="Mayorista">Mayorista</option>
+                            <option value="Minorista">Minorista</option>
+                            <option value="Domiciliario">Domiciliario</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="id_telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="id_telefono" placeholder="Teléfono del cliente">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="id_email" placeholder="Email del cliente">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label for="id_direccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="id_direccion" placeholder="Dirección del cliente">
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="guardar-cliente-btn" class="btn btn-primary">Guardar Cliente</button>
+        </div>
+
+
+        <!-- Separador -->
+        <hr class="my-4">
+
+        <!-- Detalles de la Venta -->
+        <h3>Detalles de la Venta</h3>
+        <div class="mb-3">
+            <label for="id_cilindro" class="form-label">Tipo de Cilindro</label>
+            {{ detalle_form.cilindro }}
+        </div>
+        <div class="mb-3">
+            <label for="id_cantidad" class="form-label">Cantidad</label>
+            {{ detalle_form.cantidad }}
+        </div>
+        <div class="mb-3">
+            <label for="id_precio_unitario" class="form-label">Precio Unitario</label>
+            {{ detalle_form.precio_unitario }}
+        </div>
+
+        <!-- Botón para registrar la venta -->
+        <button type="submit" class="btn btn-primary">Registrar Venta</button>
     </form>
-    <a href="{% url 'ventas:lista_ventas' %}" class="btn btn-secondary mt-3">Volver</a>
 </div>
+
+<!-- Incluye tu archivo JS con la lógica AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Mostrar formulario para nuevo cliente al hacer click
+    $('#nuevo-cliente-btn').click(function () {
+        $('#nuevo-cliente-form').toggle();
+    });
+
+    // Enviar AJAX para guardar el cliente
+    $('#guardar-cliente-btn').click(function () {
+    var nombre = $('#id_nombre').val();
+    var tipo_cliente = $('#id_tipo_cliente').val();
+    var telefono = $('#id_telefono').val();
+    var email = $('#id_email').val();
+    var direccion = $('#id_direccion').val();  // Capturamos la dirección
+    
+    $.ajax({
+        url: '{% url "ventas:guardar_cliente" %}',  // La URL para guardar el cliente
+        method: 'POST',
+        data: {
+            'nombre': nombre,
+            'tipo_cliente': tipo_cliente,
+            'telefono': telefono,
+            'email': email,
+            'direccion': direccion,  // Enviamos la dirección
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function (response) {
+            if (response.success) {
+                alert('Cliente creado exitosamente');
+                // Puedes agregar el nuevo cliente al campo de selección aquí
+                $('#id_cliente').append('<option value="' + response.id + '">' + response.nombre + ' (' + response.direccion + ')</option>');
+                $('#id_cliente').val(response.id);  // Selecciona el cliente recién creado
+                $('#nuevo-cliente-form').hide();  // Ocultar el formulario después de guardar
+            } else {
+                alert('Error al crear el cliente');
+            }
+        },
+        error: function () {
+            alert('Hubo un error al guardar el cliente');
+        }
+    });
+});
+</script>
 {% endblock %}
