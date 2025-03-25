@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Ventas</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.id }}</td>
+                <td>{{ venta.cliente.nombre }}</td>
+                <td>{{ venta.fecha }}</td>
+                <td><a href="{% url 'ventas:detalle_venta' venta.id %}" class="btn btn-primary btn-sm">Ver</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'ventas:registrar_venta' %}" class="btn btn-success">Registrar Nueva Venta</a>
+</div>
+{% endblock %}

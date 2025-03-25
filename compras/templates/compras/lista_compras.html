@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Compras</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proveedor</th>
+                <th>Fecha</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for compra in compras %}
+            <tr>
+                <td>{{ compra.id }}</td>
+                <td>{{ compra.proveedor.nombre }}</td>
+                <td>{{ compra.fecha }}</td>
+                <td><a href="{% url 'compras:detalle_compra' compra.id %}" class="btn btn-primary btn-sm">Ver</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'compras:realizar_compra' %}" class="btn btn-success">Registrar Nueva Compra</a>
+</div>
+{% endblock %}

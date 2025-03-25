@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Registrar Compra</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="proveedor" class="form-label">Proveedor</label>
+            {{ form.proveedor }}
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+    </form>
+    <a href="{% url 'compras:lista_compras' %}" class="btn btn-secondary mt-3">Volver</a>
+</div>
+{% endblock %}

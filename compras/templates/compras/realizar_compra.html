@@ -1,0 +1,78 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Registrar Nueva Compra</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="id_proveedor" class="form-label">Proveedor</label>
+            <select name="proveedor" id="id_proveedor" class="form-control">
+                <option value="">Seleccione un proveedor</option>
+                {% for proveedor in compra_form.fields.proveedor.queryset %}
+                    <option value="{{ proveedor.id }}">{{ proveedor.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="nuevo_proveedor" class="form-label">Nuevo Proveedor (Opcional)</label>
+            <input type="text" id="nuevo_proveedor" placeholder="Ingrese nuevo proveedor" class="form-control">
+            <button type="button" id="agregarProveedorBtn" class="btn btn-secondary mt-2">Agregar</button>
+        </div>
+
+        <h3>Detalle de la Compra</h3>
+
+        <div class="mb-3">
+            <label for="{{ detalle_form.cilindro.id_for_label }}" class="form-label">Tipo de Cilindro (kg)</label>
+            {{ detalle_form.cilindro }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ detalle_form.cantidad.id_for_label }}" class="form-label">Cantidad</label>
+            {{ detalle_form.cantidad }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ detalle_form.precio_unitario.id_for_label }}" class="form-label">Precio Unitario</label>
+            {{ detalle_form.precio_unitario }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registrar Compra</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#agregarProveedorBtn").click(function () {
+                let nuevoProveedor = $("#nuevo_proveedor").val().trim();
+                if (nuevoProveedor === "") {
+                    alert("Ingrese un nombre de proveedor.");
+                    return;
+                }
+
+                $.ajax({
+                    url: "{% url 'compras:agregar_proveedor' %}",
+                    type: "POST",
+                    data: {
+                        nombre: nuevoProveedor,
+                        csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+                    },
+                    success: function (response) {
+                        if (response.created) {
+                            $("#id_proveedor").append(`<option value="${response.id}" selected>${response.nombre}</option>`);
+                            $("#nuevo_proveedor").val("");  // Limpiar el campo
+                        } else {
+                            alert("El proveedor ya existe.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error al agregar proveedor.");
+                    }
+                });
+            });
+        });
+    </script>
+</div>
+{% endblock %}

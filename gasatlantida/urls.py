@@ -20,4 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),  # Redirige las rutas a core
+    path('compras/', include('compras.urls')),  # Rutas de compras
+    path('ventas/', include('ventas.urls')),  # Rutas de ventas
+    path('usuarios/', include('usuarios.urls')),  # Agregamos autenticación
 ]

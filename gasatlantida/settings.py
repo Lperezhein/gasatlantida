@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'ckeditor',
+    'compras',
+    'ventas',
+    'usuarios',
 ]
 
 MIDDLEWARE = [
@@ -100,6 +103,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# settings.py
+
+LOGOUT_REDIRECT_URL = 'home'  # Redirige a la vista 'home' después de hacer logout
+LOGIN_REDIRECT_URL = 'home'  # Redirige a la vista 'home' después de iniciar sesión
 
 
 # Internationalization

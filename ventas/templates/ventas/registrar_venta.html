@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Registrar Venta</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="cliente" class="form-label">Cliente</label>
+            {{ form.cliente }}
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+    </form>
+    <a href="{% url 'ventas:lista_ventas' %}" class="btn btn-secondary mt-3">Volver</a>
+</div>
+{% endblock %}
