@@ -1,4 +1,5 @@
 {% extends "core/base.html" %}
+{% load l10n %} 
 {% block content %}
 <div class="container mt-4">
     <h2>Lista de Compras</h2>
@@ -8,6 +9,8 @@
                 <th>ID</th>
                 <th>Proveedor</th>
                 <th>Fecha</th>
+                <th>Cilindros</th>  <!-- Nueva columna -->
+                <th>Precio</th>     <!-- Nueva columna -->
                 <th>Detalles</th>
             </tr>
         </thead>
@@ -17,6 +20,16 @@
                 <td>{{ compra.id }}</td>
                 <td>{{ compra.proveedor.nombre }}</td>
                 <td>{{ compra.fecha }}</td>
+                <td>
+                    {% for detalle in compra.detalles.all %}
+                        {{ detalle.cantidad }} cilindros de {{ detalle.cilindro.peso }} kg <br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for detalle in compra.detalles.all %}
+                        ${{ detalle.precio_unitario|floatformat:0|localize }} <br>
+                    {% endfor %}
+                </td>
                 <td><a href="{% url 'compras:detalle_compra' compra.id %}" class="btn btn-primary btn-sm">Ver</a></td>
             </tr>
             {% endfor %}
@@ -25,3 +38,4 @@
     <a href="{% url 'compras:realizar_compra' %}" class="btn btn-success">Registrar Nueva Compra</a>
 </div>
 {% endblock %}
+

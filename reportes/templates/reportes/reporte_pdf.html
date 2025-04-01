@@ -1,0 +1,55 @@
+<!-- reportes/templates/reportes/reporte_pdf.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Ventas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reporte de Ventas</h1>
+    <p>Fecha de inicio: {{ fecha_inicio }}</p>
+    <p>Fecha de fin: {{ fecha_fin }}</p>
+    <p>Cliente: {{ cliente }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Tipo Cliente</th>
+                <th>Monto</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.fecha }}</td>
+                <td>{{ venta.cliente.nombre }}</td>
+                <td>{{ venta.cliente.tipo_cliente }}</td>
+                <td>{{ venta.monto }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Total de Ventas: {{ total_ventas }}</h3>
+</body>
+</html>

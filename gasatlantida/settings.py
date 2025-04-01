@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'compras',
     'ventas',
     'usuarios',
+    'reportes',
 ]
 
 MIDDLEWARE = [
@@ -114,10 +115,14 @@ LOGIN_REDIRECT_URL = 'home'  # Redirige a la vista 'home' después de iniciar se
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'es'
+LANGUAGES = [
+    ('es', 'Español'),
+    # otros idiomas si es necesario
+]
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_L10N = True
 
 USE_TZ = True
 

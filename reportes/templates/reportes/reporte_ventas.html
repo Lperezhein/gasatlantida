@@ -1,0 +1,75 @@
+{% extends "core/base.html" %}
+
+{% load l10n %} 
+
+{% block title %}Reporte de Ventas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Reporte de Ventas</h2>
+
+    <!-- Formulario de filtros -->
+    <form method="get" action="{% url 'reportes:reporte_ventas' %}" class="mb-4 row g-3">
+        <div class="col-md-3">
+            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
+            <input type="date" class="form-control" name="fecha_inicio" value="{{ fecha_inicio }}">
+        </div>
+        <div class="col-md-3">
+            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
+            <input type="date" class="form-control" name="fecha_fin" value="{{ fecha_fin }}">
+        </div>
+        <div class="col-md-3">
+            <label for="tipo_cliente" class="form-label">Tipo de Cliente:</label>
+            <select name="tipo_cliente" id="tipo_cliente" class="form-control">
+                <option value="">Todos</option>
+                <option value="mayorista" {% if tipo_cliente == "mayorista" %}selected{% endif %}>Mayorista</option>
+                <option value="minorista" {% if tipo_cliente == "minorista" %}selected{% endif %}>Minorista</option>
+                <option value="domiciliario" {% if tipo_cliente == "domiciliario" %}selected{% endif %}>Domiciliario</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <!-- Mensaje de rango seleccionado -->
+    <h5>Ventas entre <strong>{{ fecha_inicio }}</strong> y <strong>{{ fecha_fin }}</strong></h5>
+
+    {% if ventas %}
+        <!-- Tabla de ventas -->
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Monto</th>
+                    <th>Detalles</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venta in ventas %}
+                <tr>
+                    <td>{{ venta.fecha|date:"d F Y" }}</td>
+                    <td>{{ venta.cliente.nombre }}</td>
+                    <td>${{ venta.monto|floatformat:0|localize }}</td>
+                    <td><a href="{% url 'ventas:detalle_venta' venta.id %}" class="btn btn-info btn-sm">Ver</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Total de ventas -->
+        <p class="fs-5"><strong>Total de Ventas:</strong> ${{ total_ventas|floatformat:0|localize }}</p>
+
+        <!-- Botón de descarga -->
+        <a href="{% url 'reportes:generar_reporte_pdf' %}?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&tipo_cliente={{ tipo_cliente }}" class="btn btn-success">
+            Descargar Reporte PDF
+        </a>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            No se encontraron ventas para los filtros seleccionados.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

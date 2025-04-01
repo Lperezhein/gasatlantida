@@ -23,7 +23,7 @@
             <tbody>
                 {% for detalle in detalles %}
                     <tr>
-                        <td>{{ detalle.cilindro }} kg</td>
+                        <td>{{ detalle.cilindro }} cilindros</td>
                         <td>{{ detalle.cantidad }}</td>
                         <td>${{ detalle.precio_unitario }}</td>
                         <td>${{ detalle.cantidad|multiply:detalle.precio_unitario }}</td>  <!-- Esto calcula el total -->

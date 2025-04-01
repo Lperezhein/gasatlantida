@@ -19,4 +19,4 @@ class DetalleCompra(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name="detalles")
     cilindro = models.ForeignKey("ventas.Cilindro", on_delete=models.CASCADE)  # Relación con ventas
     cantidad = models.PositiveIntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=1)

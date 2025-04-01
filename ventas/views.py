@@ -10,7 +10,16 @@ from .forms import VentaForm, DetalleVentaForm, ClienteForm
 
 @login_required
 def lista_ventas(request):
-    ventas = Venta.objects.all()
+    ventas = Venta.objects.all()  # Obtén todas las ventas
+
+    # Agregar el cálculo de cantidad total de cilindros y precio total
+    for venta in ventas:
+        cantidad_total = sum(detalle.cantidad for detalle in venta.detalles.all())  # Suma de la cantidad de cilindros
+        precio_total = sum(detalle.subtotal() for detalle in venta.detalles.all())  # Suma del precio total de los detalles
+
+        venta.cantidad_total = cantidad_total
+        venta.precio_total = precio_total
+
     return render(request, 'ventas/lista_ventas.html', {'ventas': ventas})
 
 @login_required

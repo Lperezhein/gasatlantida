@@ -1,0 +1,69 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Reporte de Compras</h2>
+
+    <!-- Submenú de Reportes -->
+    <nav class="nav nav-tabs mb-4">
+        <a class="nav-link" href="{% url 'reportes:reporte_ventas' %}">Reporte de Ventas</a>
+        <a class="nav-link active" href="{% url 'reportes:reporte_compras' %}">Reporte de Compras</a>
+    </nav>
+
+    <!-- Filtros -->
+    <form method="GET" class="row mb-4">
+        <div class="col-md-4">
+            <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
+            <input type="date" name="fecha_inicio" class="form-control" value="{{ fecha_inicio }}">
+        </div>
+        <div class="col-md-4">
+            <label for="fecha_fin" class="form-label">Fecha Fin:</label>
+            <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <!-- Tabla de Compras -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proveedor</th>
+                <th>Fecha</th>
+                <th>Cilindros</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for compra in compras %}
+            <tr>
+                <td>{{ compra.id }}</td>
+                <td>{{ compra.proveedor.nombre }}</td>
+                <td>{{ compra.fecha }}</td>
+                <td>
+                    {% for detalle in compra.detalles.all %}
+                        {{ detalle.cantidad }} cilindros de {{ detalle.cilindro.peso }} kg <br>
+                    {% endfor %}
+                </td>
+                <td>${{ compra.monto|floatformat:0 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No se encontraron compras en este período.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Total de compras -->
+    <div class="alert alert-info">
+        <strong>Total de Compras:</strong> ${{ total_compras|floatformat:0 }}
+    </div>
+
+    <a href="{% url 'reportes:reporte_compras_pdf' %}?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}" class="btn btn-danger">
+        Descargar PDF
+    </a>
+</div>
+{% endblock %}

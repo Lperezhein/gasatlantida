@@ -23,4 +23,5 @@ urlpatterns = [
     path('compras/', include('compras.urls')),  # Rutas de compras
     path('ventas/', include('ventas.urls')),  # Rutas de ventas
     path('usuarios/', include('usuarios.urls')),  # Agregamos autenticación
+     path('reportes/', include('reportes.urls')),  # Asegúrate de incluir la app 'reportes'
 ]

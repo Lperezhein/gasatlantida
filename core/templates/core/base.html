@@ -27,6 +27,16 @@
                         {% if user.is_authenticated %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'compras:lista_compras' %}">Compras</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'ventas:lista_ventas' %}">Ventas</a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="reportesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Reportes
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="reportesDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'reportes:reporte_ventas' %}">Ventas</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'reportes:reporte_compras' %}">Compras</a></li>
+                                </ul>
+                            </li>
+
                         {% endif %}
                     </ul>
 

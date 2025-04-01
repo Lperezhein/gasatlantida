@@ -1,4 +1,7 @@
 {% extends "core/base.html" %}
+
+{% load l10n %} 
+
 {% block content %}
 <div class="container mt-4">
     <h2>Lista de Ventas</h2>
@@ -8,6 +11,8 @@
                 <th>ID</th>
                 <th>Cliente</th>
                 <th>Fecha</th>
+                <th>Cilindros</th>  <!-- Nueva columna -->
+                <th>Precio</th>     <!-- Nueva columna -->
                 <th>Detalles</th>
             </tr>
         </thead>
@@ -17,6 +22,8 @@
                 <td>{{ venta.id }}</td>
                 <td>{{ venta.cliente.nombre }}</td>
                 <td>{{ venta.fecha }}</td>
+                <td>{{ venta.cantidad_total }}</td>
+                <td>${{ venta.precio_total|floatformat:0|localize }}</td>  <!-- Mostrar precio total con separador de miles -->
                 <td><a href="{% url 'ventas:detalle_venta' venta.id %}" class="btn btn-primary btn-sm">Ver</a></td>
             </tr>
             {% endfor %}
