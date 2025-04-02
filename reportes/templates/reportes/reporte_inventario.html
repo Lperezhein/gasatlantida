@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+
+{% load l10n %} 
+
+{% block title %}Reporte de Inventario{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Reporte de Inventario</h2>
+
+    <!-- Submenú de Reportes -->
+    <nav class="nav nav-tabs mb-4">
+        <a class="nav-link" href="{% url 'reportes:reporte_ventas' %}">Reporte de Ventas</a>
+        <a class="nav-link" href="{% url 'reportes:reporte_compras' %}">Reporte de Compras</a>
+        <a class="nav-link active" href="{% url 'reportes:reporte_inventario' %}">Reporte de Inventario</a>
+    </nav>
+
+    <!-- Formulario de filtros -->
+    <form method="get" action="{% url 'reportes:reporte_inventario' %}" class="mb-4 row g-3">
+        <div class="col-md-3">
+            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
+            <input type="date" class="form-control" name="fecha_inicio" value="{{ fecha_inicio }}">
+        </div>
+        <div class="col-md-3">
+            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
+            <input type="date" class="form-control" name="fecha_fin" value="{{ fecha_fin }}">
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <!-- Mensaje de rango seleccionado -->
+    <h5>Inventario entre <strong>{{ fecha_inicio }}</strong> y <strong>{{ fecha_fin }}</strong></h5>
+
+    {% if stock_actual is not None %}
+        <div class="alert alert-info">
+            <p><strong>Total Compras:</strong> {{ total_compras }}</p>
+            <p><strong>Total Ventas:</strong> {{ total_ventas }}</p>
+            <p><strong>Stock Actual:</strong> {{ stock_actual }}</p>
+        </div>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            No se encontraron datos para el rango de fechas seleccionado.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

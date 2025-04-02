@@ -82,3 +82,50 @@ def registrar_venta(request):
 def detalle_venta(request, venta_id):
     venta = get_object_or_404(Venta, id=venta_id)
     return render(request, 'ventas/detalle_venta.html', {'venta': venta})
+
+@login_required
+def reporte_stock_pdf(request):
+    # Obtener el stock de cilindros
+    cilindros = Cilindro.objects.all()
+    umbral_bajo = 5  # Umbral mínimo de alerta
+
+    # Configurar el PDF
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(200, 750, "Reporte de Stock de Cilindros")
+
+    # Encabezado de la tabla
+    data = [["Peso (kg)", "Stock", "Estado"]]
+
+    # Llenar la tabla con datos
+    for cilindro in cilindros:
+        estado = "Bajo stock ⚠️" if cilindro.stock < umbral_bajo else "Suficiente"
+        data.append([f"{cilindro.peso} kg", cilindro.stock, estado])
+
+    # Crear la tabla
+    table = Table(data, colWidths=[100, 100, 150])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+
+    # Posición de la tabla en el PDF
+    table.wrapOn(c, 50, 600)
+    table.drawOn(c, 50, 650)
+
+    # Finalizar el PDF
+    c.showPage()
+    c.save()
+    
+    # Responder con el archivo PDF
+    pdf = buffer.getvalue()
+    buffer.close()
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporte_stock.pdf"'
+    return response

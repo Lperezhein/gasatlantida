@@ -11,4 +11,5 @@ urlpatterns = [
     path('compras/', reporte_compras, name="reporte_compras"),
     path('compras/pdf/', reporte_compras_pdf, name="reporte_compras_pdf"),
     path('', reporte_panel, name="reporte_panel"),  # Página principal de los reportes
+    path('inventario/', views.reporte_inventario, name='reporte_inventario'),  # Nueva URL
 ]
