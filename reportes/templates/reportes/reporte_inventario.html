@@ -12,7 +12,8 @@
     <nav class="nav nav-tabs mb-4">
         <a class="nav-link" href="{% url 'reportes:reporte_ventas' %}">Reporte de Ventas</a>
         <a class="nav-link" href="{% url 'reportes:reporte_compras' %}">Reporte de Compras</a>
-        <a class="nav-link active" href="{% url 'reportes:reporte_inventario' %}">Reporte de Inventario</a>
+        <a class="nav-link active" href="{% url 'reportes:reporte_inventario' %}">Reporte de Inventario</a> 
+        <a class="nav-link " href="{% url 'reportes:reporte_rentabilidad' %}">Reporte de Rentabilidad</a>
     </nav>
 
     <!-- Formulario de filtros -->
@@ -39,6 +40,8 @@
             <p><strong>Total Ventas:</strong> {{ total_ventas }}</p>
             <p><strong>Stock Actual:</strong> {{ stock_actual }}</p>
         </div>
+        <!-- Botón de descarga de PDF -->
+        
     {% else %}
         <div class="alert alert-warning" role="alert">
             No se encontraron datos para el rango de fechas seleccionado.

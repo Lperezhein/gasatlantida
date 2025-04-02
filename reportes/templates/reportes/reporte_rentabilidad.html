@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+
+{% load l10n %} 
+
+{% block title %}Reporte de Rentabilidad{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Reporte de Rentabilidad</h2>
+
+    <!-- Submenú de Reportes -->
+    <nav class="nav nav-tabs mb-4">
+        <a class="nav-link" href="{% url 'reportes:reporte_ventas' %}">Reporte de Ventas</a>
+        <a class="nav-link" href="{% url 'reportes:reporte_compras' %}">Reporte de Compras</a>
+        <a class="nav-link " href="{% url 'reportes:reporte_inventario' %}">Reporte de Inventario</a>
+        <a class="nav-link active" href="{% url 'reportes:reporte_rentabilidad' %}">Reporte de Rentabilidad</a>
+    </nav>
+
+    <!-- Formulario de filtros -->
+    <form method="get" action="{% url 'reportes:reporte_rentabilidad' %}" class="mb-4 row g-3">
+        <div class="col-md-3">
+            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
+            <input type="date" class="form-control" name="fecha_inicio" value="{{ fecha_inicio }}">
+        </div>
+        <div class="col-md-3">
+            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
+            <input type="date" class="form-control" name="fecha_fin" value="{{ fecha_fin }}">
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <!-- Resumen de Rentabilidad -->
+    <h5>Rentabilidad entre <strong>{{ fecha_inicio }}</strong> y <strong>{{ fecha_fin }}</strong></h5>
+
+    <div class="alert alert-info">
+        <p><strong>Total Compras:</strong> ${{ total_compras|floatformat:0|localize }}</p>
+        <p><strong>Total Ventas:</strong> ${{ total_ventas|floatformat:0|localize }}</p>
+        <p><strong>Rentabilidad:</strong> 
+            <span class="{% if rentabilidad >= 0 %}text-success{% else %}text-danger{% endif %}">
+                ${{ rentabilidad|floatformat:0|localize }}
+            </span>
+        </p>
+    </div>
+
+</div>
+{% endblock %}

@@ -361,3 +361,41 @@ def reporte_inventario(request):
     }
 
     return render(request, 'reportes/reporte_inventario.html', context)
+
+@login_required
+def reporte_rentabilidad(request):
+    fecha_inicio = request.GET.get('fecha_inicio', '')
+    fecha_fin = request.GET.get('fecha_fin', '')
+
+    compras = Compra.objects.all()
+    ventas = Venta.objects.all()
+
+    # Filtrado por fecha
+    if fecha_inicio and fecha_fin:
+        compras = compras.filter(fecha__range=[fecha_inicio, fecha_fin])
+        ventas = ventas.filter(fecha__range=[fecha_inicio, fecha_fin])
+
+    # Cálculo del monto total de compras
+    compras = compras.annotate(
+        monto=Sum(ExpressionWrapper(F('detalles__cantidad') * F('detalles__precio_unitario'), output_field=DecimalField()))
+    )
+    total_compras = compras.aggregate(total=Sum('monto'))['total'] or 0
+
+    # Cálculo del monto total de ventas
+    ventas = ventas.annotate(
+        monto=Sum(ExpressionWrapper(F('detalles__cantidad') * F('detalles__precio_unitario'), output_field=DecimalField()))
+    )
+    total_ventas = ventas.aggregate(total=Sum('monto'))['total'] or 0
+
+    # Cálculo de rentabilidad
+    rentabilidad = total_ventas - total_compras
+
+    context = {
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin,
+        'total_compras': total_compras,
+        'total_ventas': total_ventas,
+        'rentabilidad': rentabilidad,
+    }
+
+    return render(request, 'reportes/reporte_rentabilidad.html', context)
