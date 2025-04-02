@@ -8,6 +8,12 @@
 <div class="container mt-4">
     <h2>Reporte de Ventas</h2>
 
+        <!-- Submenú de Reportes -->
+    <nav class="nav nav-tabs mb-4">
+        <a class="nav-link active" href="{% url 'reportes:reporte_ventas' %}">Reporte de Ventas</a>
+        <a class="nav-link " href="{% url 'reportes:reporte_compras' %}">Reporte de Compras</a>
+    </nav>
+
     <!-- Formulario de filtros -->
     <form method="get" action="{% url 'reportes:reporte_ventas' %}" class="mb-4 row g-3">
         <div class="col-md-3">
