@@ -12,7 +12,7 @@
     <nav class="nav nav-tabs mb-4">
         <a class="nav-link" href="{% url 'reportes:reporte_ventas' %}">Reporte de Ventas</a>
         <a class="nav-link" href="{% url 'reportes:reporte_compras' %}">Reporte de Compras</a>
-        <a class="nav-link " href="{% url 'reportes:reporte_inventario' %}">Reporte de Inventario</a>
+        <a class="nav-link" href="{% url 'reportes:reporte_inventario' %}">Reporte de Inventario</a>
         <a class="nav-link active" href="{% url 'reportes:reporte_rentabilidad' %}">Reporte de Rentabilidad</a>
     </nav>
 
@@ -44,5 +44,42 @@
         </p>
     </div>
 
+    <!-- Botón para descargar el reporte en PDF -->
+    <div class="mb-4">
+        <a href="{% url 'reportes:reporte_rentabilidad_pdf' %}?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}" class="btn btn-success mt-4">
+            Descargar PDF
+        </a>
+    </div>
+
+    <!-- Contenedor para el gráfico -->
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="graficoRentabilidad"></canvas>
+        </div>
+    </div>
+
 </div>
+<script>
+    var ctx = document.getElementById('graficoRentabilidad').getContext('2d');
+    var graficoRentabilidad = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Compras', 'Ventas', 'Rentabilidad'],
+            datasets: [{
+                label: 'Monto ($)',
+                data: [{{ total_compras }}, {{ total_ventas }}, {{ rentabilidad }}],
+                backgroundColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(0, 219, 76, 1)'],
+                borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

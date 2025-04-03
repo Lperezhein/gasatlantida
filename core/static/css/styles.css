@@ -5,3 +5,16 @@ body {
 h1, h2, h3 {
     color: #333;
 }
+
+.alert-info {
+    background-color: #e9f7fd;
+    border-color: #c5e1f3;
+}
+
+.container {
+    background-color:hsl(64.1deg 86.5% 46.47% / 27%);;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+

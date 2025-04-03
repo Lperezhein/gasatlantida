@@ -13,4 +13,5 @@ urlpatterns = [
     path('', reporte_panel, name="reporte_panel"),  # Página principal de los reportes
     path('inventario/', views.reporte_inventario, name='reporte_inventario'),  # Nueva URL
     path('rentabilidad/', reporte_rentabilidad, name='reporte_rentabilidad'),  # Agrega esta línea
+    path('reporte_rentabilidad/pdf/', views.reporte_rentabilidad_pdf, name='reporte_rentabilidad_pdf'),
 ]
