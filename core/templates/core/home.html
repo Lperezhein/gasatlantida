@@ -1,6 +1,42 @@
 {% extends 'core/base.html' %}
 
+{% load static %}
+
 {% block content %}
-    <h2>Bienvenido a Gas Atlantida</h2>
-    <p>Esta es la página de inicio.</p>
+<div class="container">
+    <h1 class="titulo-principal">Bienvenido a Gas Atlántida</h1>
+    
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <img src="{% static 'img/logogas.png' %}" alt="Cilindros de gas" class="img-fluid rounded shadow">
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+            <div>
+                <h3>Distribuimos energía con seguridad y confianza</h3>
+                <p>
+                    Somos una empresa comprometida con la distribución eficiente de gas licuado. Atendemos tanto a pequeños negocios como a hogares que confían en nuestro servicio.
+                </p>
+               
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 text-center">
+        <div class="col-md-4">
+            <i class="fas fa-truck fa-3x mb-2 text-danger"></i>
+            <h5>Despacho Rápido</h5>
+            <p>Entrega ágil a domicilio o punto de venta.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="fas fa-fire fa-3x mb-2 text-danger"></i>
+            <h5>Calidad Garantizada</h5>
+            <p>Gas certificado con altos estándares de seguridad.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="fas fa-users fa-3x mb-2 text-danger"></i>
+            <h5>Atención Personalizada</h5>
+            <p>Resolvemos tus dudas y pedidos con rapidez.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
