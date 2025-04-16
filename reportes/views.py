@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from ventas.models import Venta, Cliente, DetalleVenta
@@ -29,51 +30,52 @@ def reporte_ventas(request):
     cliente_id = request.GET.get('cliente', '')
     tipo_cliente = request.GET.get('tipo_cliente', '')
 
-    # Obtener todos los clientes
     clientes = Cliente.objects.all()
-
-    # Filtrado por tipo de cliente (aplicado a clientes y luego a ventas)
     if tipo_cliente:
         clientes = clientes.filter(tipo_cliente=tipo_cliente)
 
     ventas = Venta.objects.all()
 
-    # Filtrado por fecha
     if fecha_inicio and fecha_fin:
         try:
             ventas = ventas.filter(fecha__range=[fecha_inicio, fecha_fin])
         except ValueError:
             fecha_inicio, fecha_fin = '', ''
 
-    # Filtrado por cliente
     if cliente_id:
         ventas = ventas.filter(cliente_id=cliente_id)
 
-    # **AQUÍ SE APLICA EL FILTRO POR `tipo_cliente`**
     if tipo_cliente:
-        tipo_cliente = tipo_cliente.capitalize()  # Convierte "mayorista" en "Mayorista"
+        tipo_cliente = tipo_cliente.capitalize()
         ventas = ventas.filter(cliente__tipo_cliente=tipo_cliente)
 
-
-    # Cálculo del monto total de las ventas correctamente
     ventas = ventas.annotate(
-        monto=Sum(ExpressionWrapper(F('detalles__cantidad') * F('detalles__precio_unitario'), output_field=DecimalField()))
+        monto=Sum(
+            ExpressionWrapper(
+                F('detalles__cantidad') * F('detalles__precio_unitario'),
+                output_field=DecimalField()
+            )
+        )
     )
 
     total_ventas = ventas.aggregate(total=Sum('monto'))['total'] or 0
+
+    # ✅ PAGINACIÓN
+    paginator = Paginator(ventas, 10)  # 10 resultados por página
+    page = request.GET.get('page')
+    ventas_page = paginator.get_page(page)
 
     context = {
         'fecha_inicio': fecha_inicio,
         'fecha_fin': fecha_fin,
         'cliente_seleccionado': int(cliente_id) if cliente_id else '',
         'clientes': clientes,
-        'ventas': ventas,
+        'ventas': ventas_page,
         'total_ventas': total_ventas,
         'tipo_cliente': tipo_cliente
     }
 
     return render(request, 'reportes/reporte_ventas.html', context)
-
 
 @login_required
 def generar_reporte_pdf(request):

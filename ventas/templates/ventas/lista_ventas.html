@@ -31,4 +31,38 @@
     </table>
     <a href="{% url 'ventas:registrar_venta' %}" class="btn btn-success">Registrar Nueva Venta</a>
 </div>
+<nav aria-label="Paginación" class="mt-4">
+  <ul class="pagination justify-content-center">
+    {% if ventas.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1" title="Ir al inicio">⏮️</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ ventas.previous_page_number }}" title="Página anterior">⬅️</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">⏮️</span></li>
+      <li class="page-item disabled"><span class="page-link">⬅️</span></li>
+    {% endif %}
+
+    <li class="page-item active">
+      <span class="page-link">
+        Página {{ ventas.number }} de {{ ventas.paginator.num_pages }}
+      </span>
+    </li>
+
+    {% if ventas.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ ventas.next_page_number }}" title="Página siguiente">➡️</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ ventas.paginator.num_pages }}" title="Ir al final">⏭️</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">➡️</span></li>
+      <li class="page-item disabled"><span class="page-link">⏭️</span></li>
+    {% endif %}
+  </ul>
+</nav>
+
 {% endblock %}

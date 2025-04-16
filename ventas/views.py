@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
@@ -18,17 +19,22 @@ from datetime import datetime
 
 @login_required
 def lista_ventas(request):
-    ventas = Venta.objects.all()  # Obtén todas las ventas
+    ventas_list = Venta.objects.all().order_by('-fecha')  # Ordenadas por fecha descendente
+    paginator = Paginator(ventas_list, 10)  # 10 ventas por página
+    page = request.GET.get('page')
+    ventas_page = paginator.get_page(page)
 
-    # Agregar el cálculo de cantidad total de cilindros y precio total
-    for venta in ventas:
-        cantidad_total = sum(detalle.cantidad for detalle in venta.detalles.all())  # Suma de la cantidad de cilindros
-        precio_total = sum(detalle.subtotal() for detalle in venta.detalles.all())  # Suma del precio total de los detalles
+    # Calcular los totales SOLO para las ventas que están en la página actual
+    for venta in ventas_page:
+        cantidad_total = sum(detalle.cantidad for detalle in venta.detalles.all())
+        precio_total = sum(detalle.subtotal() for detalle in venta.detalles.all())
 
         venta.cantidad_total = cantidad_total
         venta.precio_total = precio_total
 
-    return render(request, 'ventas/lista_ventas.html', {'ventas': ventas})
+    return render(request, 'ventas/lista_ventas.html', {
+        'ventas': ventas_page
+    })
 
 @login_required
 def guardar_cliente(request):
